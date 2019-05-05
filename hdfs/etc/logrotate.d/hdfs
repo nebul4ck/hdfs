@@ -1,0 +1,10 @@
+/var/log/hadoop/*.log
+/var/log/hdfs/*.log
+{
+        weekly
+        size 100M
+        missingok
+        rotate 3
+        compress
+        notifempty
+}

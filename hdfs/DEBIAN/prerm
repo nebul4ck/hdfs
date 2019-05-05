@@ -1,0 +1,44 @@
+#!/bin/bash
+
+SERVICE="hadoop"
+HADOOP_HOME="/opt/${SERVICE}"
+HADOOP_USER="hdfs"
+HADOOP_LOGDIR="/var/log/${SERVICE}"
+
+echo "Stopping and disabling Services..."
+
+systemctl is-active datanode.service 2&>1 /dev/null
+if test $? -eq 0
+  then
+    systemctl stop datanode.service 2&>1 /dev/null
+fi
+
+systemctl is-enabled datanode.service 2&>1 /dev/null
+if test $? -eq 0
+  then
+    systemctl disable datanode.service 2&>1 /dev/null
+fi
+
+systemctl is-active namenode.service 2&>1 /dev/null
+if test $? -eq 0
+  then
+    systemctl stop namenode.service 2&>1 /dev/null
+fi
+
+systemctl is-enabled namenode.service 2&>1 /dev/null
+if test $? -eq 0
+  then
+    systemctl disable namenode.service 2&>1 /dev/null
+fi
+
+systemctl is-active secondarynamenode.service 2&>1 /dev/null
+if test $? -eq 0
+  then
+    systemctl stop secondarynamenode.service 2&>1 /dev/null
+fi
+
+systemctl is-enabled secondarynamenode.service 2&>1 /dev/null
+if test $? -eq 0
+  then
+    systemctl disable secondarynamenode.service 2&>1 /dev/null
+fi

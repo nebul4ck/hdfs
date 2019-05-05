@@ -1,0 +1,46 @@
+#!/bin/bash
+
+SERVICE="hadoop"
+HADOOP_HOME="/opt/${SERVICE}"
+HADOOP_LOG="/var/log/${SERVICE}"
+HADOOP_USER="hdfs"
+STORE_DIR="/opt/store/${SERVICE}"
+
+echo "Setting User and Group..."
+chown -R "$HADOOP_USER":"$HADOOP_USER" "$HADOOP_HOME" && chown -R "$HADOOP_USER":"$HADOOP_USER" "$HADOOP_LOG" && echo "... OK"
+
+echo "Setting directory attributes..."
+chmod -R 775 "$HADOOP_HOME" && echo "... OK"
+
+if [ -d ${STORE_DIR} ]
+then
+	if [ ! -d ${STORE_DIR}/datanode ]
+	then
+		mkdir ${STORE_DIR}/datanode
+	fi
+	if [ ! -d ${STORE_DIR}/namenode ]
+	then
+		mkdir ${STORE_DIR}/namenode
+	fi
+	if [ ! -d ${STORE_DIR}/namesecondary ]
+	then
+		mkdir ${STORE_DIR}/namesecondary
+	fi
+	if [ ! -d ${STORE_DIR}/tmp ]
+	then
+		mkdir ${STORE_DIR}/tmp
+	fi
+else
+	mkdir -p ${STORE_DIR}/{datanode,namenode,namesecondary,tmp}
+fi
+
+chown -R ${HADOOP_USER}:${HADOOP_USER} ${STORE_DIR}
+
+if command -v systemctl >/dev/null
+then
+	systemctl daemon-reload
+fi
+
+echo "You need to create hdfs user RSA-KEY in NameNode and copy it in all servers (also in self):"
+echo -e "\t# ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C '' -N ''"
+echo -e "\t# ssh-copy-id hdfs@hdfsnamenode01, hdfs@hdfssecondarynamenode01 and hdfs@hdfsdatanode01"

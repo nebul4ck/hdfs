@@ -1,0 +1,22 @@
+[Unit]
+Description=HDFS - SecondaryNameNode Service
+Documentation=https://https://hadoop.apache.org
+
+Before=datanode.service
+After=network.target
+After=zookeeper.service
+After=namenode.service
+
+Requires=namenode.service
+
+[Service]
+Type=forking
+
+User=hdfs
+Group=hdfs
+
+ExecStart=/opt/hadoop/sbin/hadoop-daemon.sh start secondarynamenode
+ExecStop=/opt/hadoop/sbin/hadoop-daemon.sh stop secondarynamenode
+
+[Install]
+WantedBy=multi-user.target

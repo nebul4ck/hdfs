@@ -1,0 +1,37 @@
+#!/bin/bash
+
+SERVICE="hadoop"
+HADOOP_HOME="/opt/${SERVICE}"
+HADOOP_LOG="/var/log/${SERVICE}"
+STORE_DIR="/opt/store/${SERVICE}"
+HADOOP_USER="hdfs"
+
+if [ "${1}" = "purge" ]
+then
+	if [ -d ${HADOOP_HOME} ]
+	then
+		echo "Deleting Hadoop directories..."
+		rm -rf ${HADOOP_HOME} && echo "... OK"
+	fi
+	if [ -d ${STORE_DIR} ]
+	then
+		echo "Deleting HDFS store directory..."
+		rm -rf ${STORE_DIR} && echo "... OK"
+	fi
+	if [ -d ${HADOOP_LOG} ]
+	then
+    	echo "Deleting HDFS log directory..."
+    	rm -rf ${HADOOP_LOG}/* && echo "... OK"
+	fi
+	if grep -q $HADOOP_USER /etc/passwd;
+	then
+        echo "Deleting Hadoop user..."
+        killall -u hdfs
+        userdel -r "$HADOOP_USER" && echo "... OK"
+	else
+        echo "User $HADOOP_USER doesn't exist, nothing to do."
+  	fi
+	if command -v systemctl >/dev/null; then
+	  systemctl daemon-reload
+	fi
+fi

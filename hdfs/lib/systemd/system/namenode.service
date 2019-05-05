@@ -1,0 +1,17 @@
+[Unit]
+Description=HDFS - NameNode Service
+Documentation=https://https://hadoop.apache.org
+After=network.target
+After=zookeeper.service
+
+[Service]
+Type=forking
+
+User=hdfs
+Group=hdfs
+
+ExecStart=/opt/hadoop/sbin/hadoop-daemon.sh start namenode
+ExecStop=/opt/hadoop/sbin/hadoop-daemon.sh stop namenode
+
+[Install]
+WantedBy=multi-user.target

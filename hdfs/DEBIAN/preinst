@@ -1,0 +1,35 @@
+#!/bin/bash
+
+SERVICE="hadoop"
+HADOOP_USER="hdfs"
+BASHRC="/home/$HADOOP_USER/.bashrc"
+
+if ! grep -q $HADOOP_USER /etc/passwd;
+then
+	echo "Creating hdfs user..."
+	useradd -d /home/"$HADOOP_USER" -m -s /bin/bash -k /etc/skel -c "Hdfs User" "$HADOOP_USER" && echo "... OK"
+else
+        echo "User $HADOOP_USER already exist."
+fi
+
+
+echo "Setting hdfs env..."
+
+cat <<EOT >> $BASHRC
+
+# Hadoop vars
+export HADOOP_HOME="/opt/hadoop"
+export HADOOP_PREFIX="/opt/hadoop"
+export HADOOP_CONF_DIR="/opt/hadoop/etc/hadoop"
+export JAVA_HOME="/usr"
+export HADOOP_HDFS_HOME="/opt/hadoop"
+export HADOOP_COMMON_LIB_NATIVE_DIR="/opt/hadoop/lib/native"
+export HADOOP_OPTS=-Djava.library.path=/opt/hadoop/lib/native
+
+PATH="$PATH:/opt/hadoop/bin:/opt/hadoop/sbin:$JAVA_HOME/bin"
+EOT
+
+#echo "Creating SSH-PUB-KEY..."
+#su -c "ssh-keygen -q -t rsa -f /home/$HADDOP_USER/.ssh/id_rsa -C '' -N ''" $HADOOP_USER && echo "... OK"
+
+echo "Important!, You must set a new password for hdfs user."

@@ -1,0 +1,21 @@
+[Unit]
+Description=HDFS - DataNode Service
+Documentation=https://https://hadoop.apache.org
+
+After=network.target
+After=zookeeper.service
+After=secondarynamenode.service
+
+Requires=namenode.service
+
+[Service]
+Type=forking
+
+User=hdfs
+Group=hdfs
+
+ExecStart=/opt/hadoop/sbin/hadoop-daemon.sh start datanode
+ExecStop=/opt/hadoop/sbin/hadoop-daemon.sh stop datanode
+
+[Install]
+WantedBy=multi-user.target
